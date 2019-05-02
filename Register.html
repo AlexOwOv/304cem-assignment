@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Gundam fans club</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.min.css" rel="stylesheet">
+
+  </head>
+  <script>
+	$(document).ready(function(){   
+	// handle button clicks         
+  $('#buttonID').click(function() {
+		// make an ajax call
+		alert($('#formID').serialize());
+    $.ajax({
+            dataType: 'jsonp',
+            jsonpCallback: '_wrapper',
+            data: $('#formID').serialize(),
+            type: 'POST',
+            url: "http://127.0.0.1:4242/Register",
+            success: handleButtonResponse,
+        });
+    });
+    function handleButtonResponse(data){
+      alert(data);
+      // parse the json string
+      var jsonObject = JSON.parse(data);
+      $('#reponseID').append( jsonObject.message );
+    }
+  
+  
+	$("#buttonme").click(function(){
+		alert("Loading now, please wait.");
+		var tempName, tempPassword;
+		//tempEmail = document.forms["signin"]["Email"].value;
+	//	tempName = document.forms["signin"]["Name"].value;
+		//tempPassword = document.forms["signin"]["Password"].value;
+		
+		
+		tempName=$("#Name").val();
+		tempPassword=$("#Password").val();
+		
+		var mydata="&name="+tempName+"&password="+tempPassword;
+		
+			if(tempName == "" || tempPassword == "")
+		{
+			alert("Please fill in all the blanks.");
+		}
+		else
+		{
+			$.ajax({
+				url: "http://127.0.0.1:4242/Register", 
+				type: 'POST',
+				data: mydata,
+				success: function(result){
+					alert("Registration success");
+					alert("Thanks for creating an account, your username is: " + tempName + "and password is: "+ tempPassword + ". Enjoy!");
+					window.location.href = "http://127.0.0.1:4242/Login";
+				//	window.location.href = "http://ABC-nekokitsune4242917356.codeanyapp.com:4242/Register";
+					}, error: function (xhr, textStatus, errorThrown) {
+						alert("Registration failed, please try again with other username");
+						console.log(textStatus);
+      		}
+				});
+			}
+	});
+});
+  </script>
+  <body id="page-top" background="img/bg-gundam.jpg">
+    <!-- Navigation -->
+	
+    <a class="menu-toggle rounded" href="#">
+      <i class="fas fa-bars"></i>
+    </a>
+    <nav id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+          <a class="js-scroll-trigger" href="#page-top">Start Bootstrap</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#page-top">Home</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#about">About</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#services">Services</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#portfolio">Portfolio</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#contact">Contact</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Header -->
+    <header>
+	  <div class ="overlay"></div>
+      <div class="container text-center my-auto">
+        <h1 class="mb-1">Gundam fans club</h1>
+        <h3 class="mb-5">
+          <em>Welcome!</em>
+        </h3>
+		<div class="style1">
+		<div id="signupform">
+		<h1>Register Form</h1>
+		<!--form id="formID" name="Registered"-->
+		<h2>
+
+		Login name:<input type= "text" id="Name">
+		<hr>
+		Password:<input type= "password" id="Password">
+
+		<hr>
+		<button id="buttonme">Register</button>
+		<hr>
+		<h2><a href="http://127.0.0.1:4242/Login">Login</a>
+		<hr>
+		<h2><a href="http://127.0.0.1:4242/Home">Home</a>
+
+		
+
+</html>

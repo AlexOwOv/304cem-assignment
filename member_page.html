@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Member Page</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Custom CSS -->
+    <link href="css/stylish-portfolio.min.css" rel="stylesheet">
+
+  </head>
+  <script>
+	$(document).ready(function(){   
+	 var favlist = [];
+	 var favitem = 0;
+	 
+	 var favlist2 = [];
+	 var favitem2 = 0;
+	 
+	 $("#add").click(function(){
+	 favlist[favitem] = $("#favorite_list").val();
+	 favitem +=1;
+	 localStorage.setItem("favlist", JSON.stringify(favlist));
+	 })
+	 
+	 
+	// handle button clicks         
+  $('#buttonID').click(function() {
+		// make an ajax call
+		alert($('#formID').serialize());
+    $.ajax({
+            dataType: 'jsonp',
+            jsonpCallback: '_wrapper',
+            data: $('#formID').serialize(),
+            type: 'POST',
+            url: "http://127.0.0.1:4242/Member_page",
+            success: handleButtonResponse,
+        });
+    });
+    function handleButtonResponse(data){
+      alert(data);
+      // parse the json string
+      var jsonObject = JSON.parse(data);
+      $('#reponseID').append( jsonObject.message );
+    }
+	
+	$("#show").click(function(){
+        var tempName;
+		tempName=localStorage.getItem("name");
+		
+		var name="&name="+tempName;
+        
+        $.ajax({
+          url: "http://127.0.0.1:4242/readfavourlist",          
+          type: "POST",
+          data: name ,
+          success: function (result) {
+            result = JSON.parse(result);
+            $("#favlist").empty();
+            $.each(result, function(i,fav){
+			  var favourite = fav.favlist;
+              favlist2[favitem2] = favourite;
+			  favitem+=1;
+			  $("#favlist").append('<div class="container"><div class="row"><div class="col-1"></div><font color="Orange"><p>'+ favourite +'</p></font></div></div>');
+			});
+            console.log(result);
+            //alert(result);
+          },
+          error: function(result){
+              console.log(result);
+            }
+        });
+        
+		  });
+		  
+		  
+	
+	 $("#Delete").click(function(){
+		var tempName,tempdelfav;
+		tempName = localStorage.getItem("name");
+		tempdelfav = $("#favorite_list").val();
+		var delData="&name="+tempName+"&favlist="+tempdelfav;
+
+        $.ajax({
+           url: "http://127.0.0.1:4242/removefavourlist",          
+           type: "POST",
+           data: delData ,
+           success: function (result) {
+			 if (result == "OK"){
+			 alert("the data was delete");
+            }
+            else{
+             alert(result);
+             console.log(result);
+			 }
+           },
+           error: function(result){
+               console.log(result);
+             }
+         });
+});
+
+	$("#save").click(function(){
+	
+	var tempName, tempfavlist;
+	tempName=localStorage.getItem("name");
+	tempfavlist=localStorage.getItem("favlist");
+		
+	var myfavdata="&name="+tempName+"&favlist="+tempfavlist;
+	
+	$.ajax({
+	type: "POST",
+	data:  myfavdata ,
+	url: "http://127.0.0.1:4242/Member_page",
+	success: function (result) {
+		alert(result);
+		if (result == "OK") {
+		alert("The data was sent to server!");
+		} else {
+		alert("The data wasnt sent to server");
+		}
+		}, error: function (xhr, textStatus, errorThrown) {
+		alert("Favourite_List is lose");
+		console.log(textStatus);
+		}
+	});
+	});
+	
+	$("#logout").click(function(){
+		alert("Loading now, please wait.");
+		localStorage.removeItem("name");
+		localStorage.removeItem("favlist");
+		window.location.href = "http://127.0.0.1:4242/Login";
+		})
+	});
+	
+	/*window.onunload=function(){
+    localStorage.clear();
+	}*/
+	
+	if (localStorage.name == undefined) {
+	 alert("Please login you acconut!");
+	 window.location.href = "http://127.0.0.1:4242/Login";
+	 }
+	 
+	 function UCFunction() {
+		var x = document.getElementById("UC");
+		if (x.style.display === "none") {
+		x.style.display = "block";
+		} else {
+		x.style.display = "none";
+		}
+	}
+	
+	function ADFunction() {
+		var y = document.getElementById("AD");
+		if (y.style.display === "none") {
+		y.style.display = "block";
+		} else {
+		y.style.display = "none";
+		}
+	}
+	
+	function ACFunction() {
+		var z = document.getElementById("AC");
+		if (z.style.display === "none") {
+		z.style.display = "block";
+		} else {
+		z.style.display = "none";
+		}
+	}
+	function CEFunction() {
+		var a = document.getElementById("CE");
+		if (a.style.display === "none") {
+		a.style.display = "block";
+		} else {
+		a.style.display = "none";
+		}
+	}
+  </script>
+  
+  <body id="page-top" background="img/bg-gundam.jpg">>
+    <!-- Navigation -->
+	
+    <a class="menu-toggle rounded" href="#">
+      <i class="fas fa-bars"></i>
+    </a>
+    <nav id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li class="sidebar-brand">
+          <a class="js-scroll-trigger" href="#page-top">Start Bootstrap</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="http://127.0.0.1:4242/Home">Home</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#about">About</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#services">services</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#portfolio">Portfolio</a>
+        </li>
+        <li class="sidebar-nav-item">
+          <a class="js-scroll-trigger" href="#contact">Contact</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Header -->
+    <header>
+	  <div class ="overlay"></div>
+      <div class="container text-center my-auto">
+        <h1 class="mb-1">Gundam fans club</h1>
+        <h3 class="mb-5">
+          <em>Member Page</em>
+        </h3>
+		<h3>Favorite List<hr>
+		<input type= "text" id="favorite_list"></h3>
+		<h3><button id="add">Add</button></h3>
+		<h3><button id="save">Save favourite list</button></h3>
+		<h3><button id="show">Show favourite list</button></h3>
+		<h3><button id="Delete">Delete favourite list</button></h3>
+		
+		<div id="favlist">
+		</div>
+
+		<button onclick="UCFunction()">UC gundam</button>
+
+		<div id="UC"><font color="Red">
+		 The main story of this work is a description of the two politically opposed organizations in the war, 
+		 accidentally but proactively becoming the protagonist of the military robot driver, and his companions, 
+		 in the war, desperately to survive the group drama. In terms of supporting roles, the people who support 
+		 the protagonists and the soldiers of the Principality of the Principality who are opposite to the protagonist 
+		 also have many characters with rich personalities. The meticulous description of the roles of the two works makes 
+		 the world content of the works very rich, and also produces many famous scenes and stories with deep thoughts. 
+		 The most breakthrough in this work is the traditional model of the mechanical hero animation "Good Man V.S. Bad Guy", 
+		 creating a more realistic and closer to real life role, making it closer to drama. Many of the "decent" characters, 
+		 including the protagonist, have their own shortcomings and insurmountable difficulties. 
+		 Each person's experience also affects future life to varying degrees. 
+		 For example, Lara's accidental death has left a huge shadow in Amro's heart, and it can't be erased in his life. 
+		 In space. The so-called "reverse" characters have different reasons for their confrontation with "decent". 
+		 Even the entire Pyongyang Principality was originally a group of cosmic colonies that were eager for peace, freedom, and equality. 
+		 They were only taken away by the ambitions in the struggle, and gradually evolved into confrontation with the Earth. 
+		 Their troops are actually Pu barrel people, for example, describe the army's rescue behavior to the civilians on Earth. 
+		 Similar things are happening in the real world. This kind of story setting changes people's impressions that the cartoon content is simple and only suitable for children, 
+		 making this work a classic after the beginning.
+		<hr>
+		Univers Century (Universal Century, U.C.) Animation or Movies<hr>
+		Mobile Suit Steel Bullet THE ORIGIN (Mobile Oklahoma Gundam THE ORIGIN, UC0068 - Animation)<hr>
+		Mobile Suit Steel Bullet MS IGLOO One Year War Secrets (Mobile Gentleman Gundam MS IGLOO - One Year Quest Secret Book -, UC0079.1 -) DVD Animation, launched in 2004)<hr>
+		Mobile Suit Gundam MS IGLOO Apocalypse 0079 (Mobile Suits Gundam MS IGLOO - One Year Apocalypse - - UC0079.1 -, DVD Animation, Launched in 2006)<hr>
+		Mobile Suit Gundam MS IGLOO 2 Gravity Front (Ms igloo 2 Battlefront Under Gravity -, UC0079.1 -, DVD Animation, launched in 2008)<hr>
+		Mobile Suit Steel Bullet (UC0079.9-0080.1, TV animation, first broadcast in 1979)<hr>
+		Mobile Suit Gundam 08MS Squad (UC0079.8-0079.11, OVA, launched in 1996)<hr>
+		Mobile Suit Steel Bomb: Report of the 08MS Team ~ Mina~ (OVA, launched in 1998)<hr>
+		Mobile Suit Steel Gun Thunderbolt<hr>
+		Mobile Suit Gundam 0080: War in the pocket (UC0079.12 at the end of the month, OVA, launched in 1989)<hr>
+		Mobile Suit Steel Bullet 0083: Stardust Memoirs (UC0083.11, OVA, launched in 1991)<hr>
+		Mobile Suit Gundam 0083 The Last Blitz of Zeon's Afterglow (movie, premiere in 1992)<hr>
+		Mobile Suit Z Steel Bullet (UC0087, TV Animation, first broadcast in 1985)<hr>
+		Mobile Warrior Z Steel Rock Star Successor (movie, premiere in 2005)<hr>
+		Mobile Suit Z Steel Bulls Lovers (movie, premiere in 2005)<hr>
+		Mobile Suit Z Steel Stars Agitate Love (Movie, 2006 Premiere)<hr>
+		Mobile Suit Steel Bullet ZZ (UC0088, TV animation, first broadcast in 1986)<hr>
+		Mobile Suit Steel Bombs against Xia (UC0093, film, premiere in 1988)<hr>
+		Mobile Suit Steel Bullet UC (UC0096, OVA, Spring 2010 Animation)<hr>
+		Mobile Suit Gundam Twilight AXIS (UC0096, OVA, animated in June 2017)<hr>
+		Mobile Suit Steel Bomb NT (UC0097, film)<hr>
+		Mobile Suit Steel Bullet Flashing Hasawi<hr>
+		Mobile Suit Steel Bullet F91 (UC0123, film, premiere in 1991)<hr>
+		Mobile Suit V Steel Bullet (UC0153, TV Animation, first broadcast in 1993)<hr>
+		G-SAVIOUR (American special film, UC0223, DVD movie, first broadcast in 2000)
+		</font></div>
+		<button onclick="ADFunction()">AD gundam</button>
+		<div id="AD"><font color="Red">
+		As fossil fuels on the planet are depleted, humans are beginning to rely on solar power for new energy. 
+		In 2307, a large solar power satellite was built with three orbital lifts of about 50,000 kilometers in length, 
+		but only those countries that can use this system can participate in the construction of the alliance.
+		In order to build these orbital lifts that produce semi-permanent energy, 
+		the regions of the world have been integrated to form three super-large groups of countries. 
+		They are the United States-centered United Nations Economic Union (UNION); the "Human Innovation Alliance" (China Leather Federation) centered on China, 
+		Russia and India; and the "New European Community" (AEU) in Europe. Due to the large size of the orbital elevators, 
+		it is difficult to defend and the structure is extremely fragile. Under this tension, 
+		the three major groups of countries gradually expand the zero-sum game between them for their prestige and prosperity.
+		In this world that cannot end the dispute, Celestial Being, a private armed group with a super-standard performance Mobile Suit "steel bomb", 
+		appeared. In order to eradicate the war, they carried out armed forces that transcended nationality, state, and religion.
+		As a result, the involvement of steel bombs in the conduct of the entire war began.
+		Western Year (Anno Domini, A.D.) ( 00 ) Animation or Movies<hr>
+		Mobile Suit Steel Bullet 00 (2307, 2312) TV Animation<hr>
+		Theatrical version of the mobile warrior steel bullet 00 -A wakening of the Trailblazer- (AD 2314, 2364) movie version
+		</font></div>
+		<button onclick="ACFunction()">AC gundam</button>
+		<div id="AC"><font color="Red">
+		From the beginning of human development of the universe, began to enter the A.C. (After Colony) year, 
+		after the completion of the first space colony L1, the Earth's unified government imposed high pressure on the colonies by force. 
+		The AC165 cosmic colonists invaded the Earth Circle, and the mediators were Hilo Wei, 
+		a non-violent non-armed person, who spoke in various colonies and on the ground to promote their ideals, 
+		but they were assassinated in AC175 ( One of the arguments was that the killer was a member of the OZ's predecessor's spy organization. 
+		The colony then fell into chaos and was suppressed by the special forces (formerly OZ). Then the kingdom of Shanke, who advocated pacifism on the earth, 
+		and his royal family, the Pescara Ford family, were also wiped out. A.C. In 195, against the powerful colonies of the Earth's unified government, 
+		the company sent five steel bombs to the Earth and began to annihilate the OZ's Operation Meteor.
+		<hr>
+		After Colony, A.C. Animation or Movies<hr>
+		New Mobile Suit Guns W(A.C.195)<hr>
+		New Mobile Warfare Steel Bomb W: Endless Waltz (OVA/Movie Special Edition, A.C.196)
+		</font></div>
+		<button onclick="CEFunction()">CE gundam</button>
+		<div id="CE"><font color="Red">
+		In the 15th year of the Cosmic Era (CE), the world-famous talented young scientist George Glenn publicly announced that he was the adjuster born through genetic modification and became the first public adjuster in history (Coordinator). ). While revealing his secrets, he also publicized the methods of transforming human genes, and greatly increased the population of the world's regulators.
+
+		At the same time, although countries have begun to regulate and regulate human genetic modification, they have not been able to prevent people from pursuing their own offspring genes and making their offspring more capable. At the same time as the population of the adjusters continues to increase, it has caused some ordinary humans who have not undergone genetic engineering, and the so-called "natural" to begin to embarrass and hate the adjusters. In the case of constant exclusion and threat from natural persons, the adjusters forced them to leave the Earth. In the colony satellite group of the L5 universe in CE44, they established the space colony PLANT, and at the same time organized the political and military autonomous organization, the Free Treaty Zodiac Alliance. (referred to as ZAFT, Zafft). Later, as George Glenn was murdered by natural persons in C.E.53, the influence of the Siegel Klein faction on the rise of the highest parliament of P.L.A.N.T., the relationship between the earth and the cosmic colonies gradually deteriorated. In the meantime, this protagonist, Huang Dahe, was born in C.E.55 (the only finished product of Dr. You Lian's super-adjuster R&D program).
+
+		On February 5, C.E., the colonial and governing state talks held in the moon city of Copernicus were bombed by terrorist bombings (Copernico tragedy), and representatives of the Earth Council and the United Nations Secretary-General of the UN Secretary-General died. Subsequently, on February 7, the Atlantic Federation, one of the governing countries, issued the Alaska Declaration, claiming that the terrorist attack was carried out by P.L.A.N.T. and that the attack was a declaration of war against the earth and natural persons. The Atlantic Federation also announced the establishment of the Earth Federation to replace the United Nations that was paralyzed by the death of all the leaders. On February 11, the Earth Alliance Army declared war on P.L.A.N.T. Aggressive attacks began from the Ptolemy base on the moon. In addition, an officer belonging to the radical anti-adjuster organization Blue Universe ordered a nuclear bomb to be secretly transported into the MA space carrier Roosevelt. Although PLANT dispatched the MS forces to annihilate the enemy, due to a sudden nuclear bomb attack, one of the 120 PLANT space colonies, the agricultural satellite "Unyus-7" was devastated, resulting in 240,372. The death of a person, known as "Blood Valentine's Day", is also the starting point of this war.
+
+		Due to the tragedy of "Bloody Valentine's Day", the dispute between the Earth and P.L.A.N.T. was escalated into a formal armed conflict. Eleven months after the war, the owner of the neutral state of the country, Kira Yamato, owned the colonial satellite "Heliopolis", which was greeted by childhood friend Athrun Zala. The ZAFT attack, their reunion became the beginning of the story.
+
+		P.L.A.N.T. launched the War of Independence after the bloody Valentine's Day. The strategy of its military organization Z.A.F.T. was to spread a large number of "neutron jammers" to the ground, making nuclear energy inaccessible to most parts of the world, triggering a worldwide energy crisis. Gradually attacking the mass projector near the equator with new weapons, in order to block the Earth Alliance Army in the Earth Circle, and no longer threaten PLANT; it is named "Operation Ouroboros" because it looks like a big snake in mythology. Combat. At the beginning of the war, no one had doubted that the Earth Army would end the war quickly with overwhelming force and resources. However, the war has been glued for nearly a year, but the battle situation is increasingly unfavorable to the coalition forces. One of the main reasons is that the Earth Army is unable to do anything against Z.A.F.T.'s new weapon, the Mobile Suit (MS).
+
+		In order to save the battle, the Atlantic Federation, the most powerful member of the Earth Union, has already developed a mobile warrior codenamed "G-Weapon" and secretly entrusted OP's state-owned military enterprise "Twilight Society" to assist in the construction of Heliopolis. Z.A.F.T.'s Kruze team grasped this information, dispatched a special unit to attack Heliopolis, and seized four of the "G weapons" five machines that were undergoing factory operations. Unexpectedly involved in this battle, the high-tech student of the Industrial University, Dahe, actually encountered Aslan Sarah, a childhood friend of Z.A.F.T. On a chaotic street, Huang accidentally took the only remaining GAT-X105 Strike. Looking at the full name of the G weapon system on the cockpit display, Huang unconsciously blurted out: "GUN...DAM...!".
+		<hr>
+		Cosmic Era, C.E. Animation or Movies<hr>
+		Mobile Suit Steel Bullet SEED (C.E.71-72) TV Animation<hr>
+		Mobile Suit Steel Bullet SEED DESTINY (C.E.73-74) TV Animation<hr>
+		Mobile Suit Steel Bullet SEED C.E.73 STARGAZER (C.E.73)OVA
+		</font></div>
+		<hr>
+		
+		<p align:left><div id="display"></div></p>
+		</h2>
+		<hr>
+	  <h3><button id="logout">Logout</button>
+	  </div>
+      <div class="overlay"></div>
+    </header>
+	
+
+  </body>
+
+</html>
